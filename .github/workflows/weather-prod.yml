@@ -9,11 +9,10 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    # --- THIS IS THE MATRIX SECTION ---
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    # ----------------------------------
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,23 +23,26 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Dependencies
-        run: npm install # Even if the folder is empty, this is good practice
+        run: npm install
+
+      - name: Run Unit Tests
+        run: node test.js
 
       - name: Run Security Check
         run: node app.js
         env:
-          # This connects the GitHub Secret to the code's environment variable
+          # Connects GitHub Secret to the environment variable
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
 
   package:
-    # This ensures packaging ONLY happens if BOTH Node versions pass
+    # Ensures packaging ONLY happens if BOTH Node versions pass
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Create Build Artifact
-        # Creates a zip file excluding git files
         run: zip -r weather-app-dist.zip . -x "*.git*"
 
       - name: Upload Artifact
