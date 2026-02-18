@@ -1,7 +1,9 @@
 {
   "name": "weather-app",
   "version": "1.0.0",
-  "description": "A production-ready weather application with CI/CD checks.",
+  "description": "Secure weather app pipeline",
   "main": "app.js",
-  
+  "scripts": {
+    "test": "node test.js"
+  }
 }
